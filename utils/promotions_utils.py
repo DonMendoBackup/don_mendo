@@ -184,4 +184,4 @@ async def on_component_promotion(bot: discord.Client, ctx: ComponentContext):
 
     else:
         await message_utils.answer_interaction(ctx, 'No cumples los requisitos para apoyar el ascenso',
-                                               "Consúltalos en el canal: " + bot.get_channel(REGISTER).name)
+                                               "Consúltalos en el canal: " + bot.get_channel(REGISTER).mention)
