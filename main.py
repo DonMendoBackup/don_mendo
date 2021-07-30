@@ -129,7 +129,7 @@ async def promote(ctx: InteractionContext, member: discord.Member):
                                                               msg.created_at)
 
                     await message_utils.answer_interaction(ctx, "Propuesta de promoción ejecutada con éxito.",
-                                                           "Consulta el canal:  " + bot.get_channel(PROMOTE).name)
+                                                           "Consulta el canal:  " + bot.get_channel(PROMOTE).mention)
 
                 else:
                     await message_utils.answer_interaction(ctx, "Ya existe una promoción activa para ese miembro.",
@@ -138,11 +138,11 @@ async def promote(ctx: InteractionContext, member: discord.Member):
             else:
                 await message_utils.answer_interaction(ctx, 'No puedes proponer un ascenso para ese miembro.',
                                                        "Consulta los requisitos en el canal: " + bot.get_channel(
-                                                           REGISTER).name)
+                                                           REGISTER).mention)
         else:
             await message_utils.answer_interaction(ctx, 'No puedes proponer un ascenso para ese miembro.',
                                                    "Consulta los requisitos en el canal: " + bot.get_channel(
-                                                       REGISTER).name)
+                                                       REGISTER).mention)
 
     except Exception as e:
         await message_utils.answer_interaction(ctx, 'Se ha producido un error al proponer el ascenso del miembro. '
