@@ -28,16 +28,16 @@ def get_promotion_message(promoter: discord.Member, promoter_role: discord.Role,
     promotion_embed = discord.Embed(title=promotion_title,
                                     colour=role.color)
     promotion_embed.add_field(name="Miembro propuesto:",
-                              value=member.display_name,
+                              value=member.mention,
                               inline=True)
     promotion_embed.add_field(name="Ascenso a:",
-                              value=role.name,
+                              value=role.mention,
                               inline=True)
     promotion_embed.add_field(name="Puntos para el ascenso:",
                               value="(" + str(points_achieved) + "/" + str(points_needed) + ")",
                               inline=True)
     promotion_embed.add_field(name="Apoyado por:",
-                              value=promoter.display_name,
+                              value=promoter.mention,
                               inline=False)
     promotion_embed.set_thumbnail(url=new_role.get("promote_image"))
 
@@ -157,7 +157,7 @@ async def on_component_promotion(bot: discord.Client, ctx: ComponentContext):
                                        name="Puntos para el ascenso:",
                                        value="(" + str(points_achieved) + "/" + str(points_needed) + ")",
                                        inline=True)
-            supporters = promotion_msg.to_dict()['fields'][3]['value'] + "\n" + promoter.display_name
+            supporters = promotion_msg.to_dict()['fields'][3]['value'] + "\n" + promoter.mention
             promotion_msg.set_field_at(index=3,
                                        name="Apoyado por:",
                                        value=supporters,
