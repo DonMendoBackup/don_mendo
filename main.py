@@ -1,4 +1,4 @@
-from utils import admin_roles_utils, games_utils, message_utils, promotions_utils
+from utils import admin_roles_utils, games_utils, message_utils, promotions_utils, suggestions_utils
 import discord
 import os
 
@@ -13,7 +13,8 @@ GUILD = int(os.getenv('GUILD_ID'))
 BOT = int(os.getenv('BOT_ID'))
 REGISTER = int(os.getenv('REGISTER_CHANNEL_ID'))
 PROMOTE = int(os.getenv('PROMOTE_CHANNEL_ID'))
-PROMOTE_DB = int(os.getenv('PROMOTE_CHANNEL_DB_ID'))
+SUGGEST = int(os.getenv('SUGGEST_CHANNEL_ID'))
+SUGGEST_THEME = int(os.getenv('SUGGEST_THEME_CHANNEL_ID'))
 
 bot = discord.Client(intents=discord.Intents.all())
 slash = SlashCommand(bot, sync_commands=True)
@@ -149,10 +150,112 @@ async def promote(ctx: InteractionContext, member: discord.Member):
                                                     'Comunica el siguiente mensaje al administrador:', str(e))
 
 
+@slash.slash(name='suggest', description='Realiza una sugerencia para el servidor', guild_ids=[GUILD])
+async def suggest(ctx: InteractionContext, titulo: str, descripcion: str):
+    try:
+        suggester = ctx.author
+        channel = bot.get_channel(SUGGEST)
+        suggestion_message = suggestions_utils.get_suggestion_message(suggester, titulo, descripcion)
+
+        msg = await channel.send(embed=suggestion_message.get("embed"), components=suggestion_message.get("components"))
+        await suggestions_utils.store_suggestion_db(bot, suggester, titulo, descripcion, "general", msg.created_at)
+        await message_utils.answer_interaction(ctx, "Tu sugerencia ha sido creada con éxito.",
+                                               "Consulta el canal:  " + channel.mention)
+
+    except Exception as e:
+        await message_utils.answer_interaction(ctx, 'Se ha producido un error al crear tu sugerencia. '
+                                                    'Comunica el siguiente mensaje al administrador:', str(e))
+
+
+@slash.slash(name='suggest_theme', description='Realiza una sugerencia de temática para el servidor', guild_ids=[GUILD])
+async def suggest_theme(ctx: InteractionContext, titulo: str, descripcion: str):
+    try:
+        suggester = ctx.author
+        suggester_role = admin_roles_utils.get_member_admin_role(ctx.guild, suggester)
+        rank = admin_roles_utils.get_admin_role(suggester_role.id)
+
+        if rank > 0:
+            channel = bot.get_channel(SUGGEST_THEME)
+            suggestion_message = suggestions_utils.get_suggestion_message(suggester, titulo, descripcion)
+
+            msg = await channel.send(embed=suggestion_message.get("embed"),
+                                     components=suggestion_message.get("components"))
+            await suggestions_utils.store_suggestion_db(bot, suggester, titulo, descripcion, "theme", msg.created_at)
+            await message_utils.answer_interaction(ctx, "Tu sugerencia ha sido creada con éxito.",
+                                                   "Consulta el canal:  " + channel.mention)
+        else:
+            await message_utils.answer_interaction(ctx, "No tienes suficiente rango para hacer este tipo de "
+                                                        "sugerencia.",
+                                                   "Consulta los requisitos en el canal:  "
+                                                   + bot.get_channel(REGISTER).mention)
+
+    except Exception as e:
+        await message_utils.answer_interaction(ctx, 'Se ha producido un error al crear tu sugerencia. '
+                                                    'Comunica el siguiente mensaje al administrador:', str(e))
+
+# Uncomment to add info to server
+# @slash.slash(name='welcome', description='Canal de bienvenida', guild_ids=[GUILD])
+# async def welcome(ctx):
+#     channel = bot.get_channel(REGISTER)
+#     general_embed = discord.Embed(title="Información general",
+#                                   colour=discord.Colour.dark_grey())
+#     general_embed.add_field(name="Registro",
+#                             value="Para acceder al resto de canales tienes primero que registrarte utilizando el "
+#                                   "comando **/register**.\nDurante el registro podrás seleccionar los temas "
+#                                   "disponibles que te interesen.\nAdemás se te asignará un rol correspondiente al "
+#                                   "rango 0 del servidor, pero no te preocupes, puedes ascender.\n",
+#                             inline=False)
+#     general_embed.add_field(name="Videojuegos",
+#                             value="Si quieres modificar los videojuegos que te interesan, puedes hacerlo utilizando el "
+#                                   "comando **/games**.\n",
+#                             inline=False)
+#     general_embed.set_thumbnail(url="https://i.imgur.com/d45GUg7.png")
+#     await channel.send(embed=general_embed)
+#
+#     promotions_embed = discord.Embed(title="Sistema de ascensos",
+#                                      colour=discord.Colour.dark_grey())
+#     promotions_embed.add_field(name="Cómo funciona",
+#                                value="Para ascender de rango, lo primero que será necesario es que un miembro con "
+#                                      "rango superior proponga tu ascenso.\nTras esto, necesitarás conseguir los puntos "
+#                                      "necesarios con el apoyo de otros miembros para completarlo.\n",
+#                                inline=False)
+#     promotions_embed.add_field(name="Cómo proponer un ascenso",
+#                                value="Si quieres proponer el ascenso de un miembro, puedes hacerlo utilizando el "
+#                                      "comando **/promote** seguido de una mención al miembro en cuestión.\nPor "
+#                                      "ejemplo:  **/promote @DonMendo**\n",
+#                                inline=False)
+#     promotions_embed.add_field(name="Cuántos puntos es un apoyo",
+#                                value="Cada miembro dará con su apoyo tantos puntos como el rango al que pertenezca. "
+#                                      "Eso sí, para apoyarte, será necesario que tenga un rango superior al tuyo.\n",
+#                                inline=False)
+#     promotions_embed.set_thumbnail(url="https://i.imgur.com/HO3OfyS.png")
+#     await channel.send(embed=promotions_embed)
+#
+#     suggestions_embed = discord.Embed(title="Sistema de sugerencias",
+#                                       colour=discord.Colour.dark_grey())
+#     suggestions_embed.add_field(name="Sugerencias generales",
+#                                 value="Si tienes alguna sugerencia para mejorar el servidor, puedes hacerlo utilizando "
+#                                       "el comando **/suggest** seguido de un título y una descripción.\nPor ejemplo:  "
+#                                       "**/suggest Nueva sugerencia Esto es una sugerencia**\nEstas sugerencias pueden "
+#                                       "ser valoradas por cualquier miembro registrado del servidor.\n",
+#                                 inline=False)
+#     suggestions_embed.add_field(name="Sugerencias de temática",
+#                                 value="Cada cierto tiempo el servidor cambia de temática. Para sugerir una es "
+#                                       "necesario que tengas un rango superior al 0. Puedes realizar este tipo de "
+#                                       "sugerencias utilizando el comando **/suggest_theme** seguido de un título y una "
+#                                       "descripción. \nEstas sugerencias pueden ser valoradas por cualquier miembro "
+#                                       "registrado del servidor con un rango superior a 0.\n",
+#                                 inline=False)
+#     suggestions_embed.set_thumbnail(url="https://i.imgur.com/8s0um1f.png")
+#     await channel.send(embed=suggestions_embed)
+
+
 @bot.event
 async def on_component(ctx: ComponentContext):
     if ctx.channel_id == PROMOTE:
         await promotions_utils.on_component_promotion(bot, ctx)
+    elif ctx.channel_id == SUGGEST or ctx.channel_id == SUGGEST_THEME:
+        await suggestions_utils.on_component_suggestion(bot, ctx)
 
 
 @bot.event
