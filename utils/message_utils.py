@@ -9,7 +9,7 @@ def list_to_bullet_list(list_to_convert: list):
     return list_str
 
 
-async def answer_interaction(ctx, title: str, description: str, colour=discord.Colour.dark_gold()):
+async def answer_interaction(ctx, title: str, description: str, colour=discord.Colour.from_rgb(158, 200, 204)):
     embed = discord.Embed(title=title, description=description, colour=colour)
     await ctx.send(embed=embed, hidden=True)
 
