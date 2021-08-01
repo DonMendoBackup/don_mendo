@@ -23,6 +23,8 @@ slash = SlashCommand(bot, sync_commands=True)
 @slash.slash(name='register', description='Completa tu registro en el servidor', guild_ids=[GUILD])
 async def register(ctx):
     try:
+        await message_utils.log_interaction(bot, ctx.author, "register")
+
         user = ctx.guild.get_member(ctx.author.id)
 
         if len(user.roles) == 1:
@@ -63,6 +65,8 @@ async def register(ctx):
 @slash.slash(name='games', description='Modifica tus roles de videojuegos', guild_ids=[GUILD])
 async def games(ctx):
     try:
+        await message_utils.log_interaction(bot, ctx.author, "games")
+
         user = ctx.guild.get_member(ctx.author.id)
         games_separator = discord.utils.get(ctx.guild.roles, id=int(os.getenv('ROLE_CONF_GAMES')))
         await user.add_roles(games_separator)
@@ -101,6 +105,8 @@ async def games(ctx):
 @slash.slash(name='promote', description='Asciende a un miembro de rango inferior', guild_ids=[GUILD])
 async def promote(ctx: InteractionContext, member: discord.Member):
     try:
+        await message_utils.log_interaction(bot, ctx.author, "promote")
+
         promoter = ctx.author
         promoter_role = admin_roles_utils.get_member_admin_role(ctx.guild, promoter)
         old_role = admin_roles_utils.get_member_admin_role(ctx.guild, member)
@@ -151,14 +157,16 @@ async def promote(ctx: InteractionContext, member: discord.Member):
 
 
 @slash.slash(name='suggest', description='Realiza una sugerencia para el servidor', guild_ids=[GUILD])
-async def suggest(ctx: InteractionContext, titulo: str, descripcion: str):
+async def suggest(ctx: InteractionContext, title: str, description: str):
     try:
+        await message_utils.log_interaction(bot, ctx.author, "suggest")
+
         suggester = ctx.author
         channel = bot.get_channel(SUGGEST)
-        suggestion_message = suggestions_utils.get_suggestion_message(suggester, titulo, descripcion)
+        suggestion_message = suggestions_utils.get_suggestion_message(suggester, title, description)
 
         msg = await channel.send(embed=suggestion_message.get("embed"), components=suggestion_message.get("components"))
-        await suggestions_utils.store_suggestion_db(bot, suggester, titulo, descripcion, "general", msg.created_at)
+        await suggestions_utils.store_suggestion_db(bot, suggester, title, description, "general", msg.created_at)
         await message_utils.answer_interaction(ctx, "Tu sugerencia ha sido creada con éxito.",
                                                "Consulta el canal:  " + channel.mention)
 
@@ -168,19 +176,21 @@ async def suggest(ctx: InteractionContext, titulo: str, descripcion: str):
 
 
 @slash.slash(name='suggest_theme', description='Realiza una sugerencia de temática para el servidor', guild_ids=[GUILD])
-async def suggest_theme(ctx: InteractionContext, titulo: str, descripcion: str):
+async def suggest_theme(ctx: InteractionContext, title: str, description: str):
     try:
+        await message_utils.log_interaction(bot, ctx.author, "suggest_theme")
+
         suggester = ctx.author
         suggester_role = admin_roles_utils.get_member_admin_role(ctx.guild, suggester)
         rank = admin_roles_utils.get_admin_role(suggester_role.id)
 
         if rank > 0:
             channel = bot.get_channel(SUGGEST_THEME)
-            suggestion_message = suggestions_utils.get_suggestion_message(suggester, titulo, descripcion)
+            suggestion_message = suggestions_utils.get_suggestion_message(suggester, title, description)
 
             msg = await channel.send(embed=suggestion_message.get("embed"),
                                      components=suggestion_message.get("components"))
-            await suggestions_utils.store_suggestion_db(bot, suggester, titulo, descripcion, "theme", msg.created_at)
+            await suggestions_utils.store_suggestion_db(bot, suggester, title, description, "theme", msg.created_at)
             await message_utils.answer_interaction(ctx, "Tu sugerencia ha sido creada con éxito.",
                                                    "Consulta el canal:  " + channel.mention)
         else:
@@ -253,8 +263,10 @@ async def suggest_theme(ctx: InteractionContext, titulo: str, descripcion: str):
 @bot.event
 async def on_component(ctx: ComponentContext):
     if ctx.channel_id == PROMOTE:
+        await message_utils.log_interaction(bot, ctx.author, "support promotion")
         await promotions_utils.on_component_promotion(bot, ctx)
     elif ctx.channel_id == SUGGEST or ctx.channel_id == SUGGEST_THEME:
+        await message_utils.log_interaction(bot, ctx.author, "support suggestion")
         await suggestions_utils.on_component_suggestion(bot, ctx)
 
 
