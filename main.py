@@ -193,6 +193,7 @@ async def suggest_theme(ctx: InteractionContext, title: str, description: str):
         await message_utils.answer_interaction(ctx, 'Se ha producido un error al crear tu sugerencia. '
                                                     'Comunica el siguiente mensaje al administrador:', str(e))
 
+
 # Uncomment to add info to server
 # @slash.slash(name='welcome', description='Canal de bienvenida', guild_ids=[GUILD])
 # async def welcome(ctx):
@@ -260,7 +261,8 @@ async def on_component(ctx: ComponentContext):
 
 @bot.event
 async def on_message(message):
-    if message.channel.id == REGISTER and message.author.id != BOT:
+    if (message.channel.id == REGISTER or message.channel.id == PROMOTE or message.channel.id == SUGGEST or message
+            .channel.id == SUGGEST_THEME) and message.author.id != BOT:
         await message.delete()
 
 
