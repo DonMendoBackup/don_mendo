@@ -80,6 +80,8 @@ async def get_suggestion_db(bot: discord.Client, custom_id: str, created_at: dat
 
 
 async def on_component_suggestion(bot: discord.Client, ctx: ComponentContext):
+    await message_utils.answer_interaction(ctx, 'Procesando tu voto...', 'Tan solo tardará unos segundos.')
+
     # Get suggestion_embed by primary key
     custom_id_button = ctx.component.get("custom_id")
     custom_id = custom_id_button.split("_")[0]
@@ -116,7 +118,7 @@ async def on_component_suggestion(bot: discord.Client, ctx: ComponentContext):
                 bad = bad - 1
         else:
             await message_utils.answer_interaction(ctx, 'Ya has votado de esta forma esta sugerencia antes.',
-                                                   "Comprueba que no te has equivocado de botón.")
+                                                   'Comprueba que no te has equivocado de botón.')
     elif action == "N":
         if member.id not in normal_members:
             voted = True

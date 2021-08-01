@@ -109,6 +109,8 @@ async def get_promotion_db(bot: discord.Client, custom_id: str, created_at: date
 
 
 async def on_component_promotion(bot: discord.Client, ctx: ComponentContext):
+    await message_utils.answer_interaction(ctx, 'Procesando tu decisión...', 'Tan solo tardará unos segundos.')
+
     # Get promotion_embed by primary key
     custom_id = ctx.component.get("custom_id")
     created_at = ctx.origin_message.created_at
