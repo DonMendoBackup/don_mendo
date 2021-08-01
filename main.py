@@ -232,7 +232,7 @@ async def suggest_theme(ctx: InteractionContext, titulo: str, descripcion: str):
 #     await channel.send(embed=promotions_embed)
 #
 #     suggestions_embed = discord.Embed(title="Sistema de sugerencias",
-#                                       colour=discord.Colour.dark_grey())
+#                                       colour=discord.Colour.from_rgb(255, 163, 70))
 #     suggestions_embed.add_field(name="Sugerencias generales",
 #                                 value="Si tienes alguna sugerencia para mejorar el servidor, puedes hacerlo utilizando "
 #                                       "el comando **/suggest** seguido de un título y una descripción.\nPor ejemplo:  "
@@ -246,7 +246,7 @@ async def suggest_theme(ctx: InteractionContext, titulo: str, descripcion: str):
 #                                       "descripción. \nEstas sugerencias pueden ser valoradas por cualquier miembro "
 #                                       "registrado del servidor con un rango superior a 0.\n",
 #                                 inline=False)
-#     suggestions_embed.set_thumbnail(url="https://i.imgur.com/8s0um1f.png")
+#     suggestions_embed.set_thumbnail(url="https://i.imgur.com/kKMGg39.png")
 #     await channel.send(embed=suggestions_embed)
 
 

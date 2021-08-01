@@ -14,7 +14,7 @@ SUGGEST_DB = int(os.getenv('SUGGEST_CHANNEL_DB_ID'))
 def get_suggestion_message(suggester: discord.Member, title: str, description: str):
     suggestion_embed = discord.Embed(title=title,
                                      description=description,
-                                     colour=discord.Colour.dark_blue())
+                                     colour=discord.Colour.from_rgb(255, 163, 70))
     suggestion_embed.add_field(name="Buena",
                                value=str(0),
                                inline=True)
@@ -26,7 +26,7 @@ def get_suggestion_message(suggester: discord.Member, title: str, description: s
                                inline=True)
     suggestion_embed.set_footer(text="Puedes cambiar tu decisión en cualquier momento.")
     suggestion_embed.set_author(name=suggester.display_name, icon_url=suggester.avatar_url)
-    suggestion_embed.set_thumbnail(url="https://i.imgur.com/8s0um1f.png")
+    suggestion_embed.set_thumbnail(url="https://i.imgur.com/kKMGg39.png")
 
     suggestion_buttons = [
         create_button(style=ButtonStyle.green,
