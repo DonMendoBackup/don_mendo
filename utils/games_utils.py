@@ -3,12 +3,13 @@ from discord_slash.utils.manage_components import create_select, create_select_o
 
 def get_games_list():
     games_list = [
-        "League of Legends",
+        "Among Us",
+        "Cookie Clicker",
         "Dead by Deadlight",
         "Genshin Impact",
-        "Pokémon",
+        "League of Legends",
         "Phasmophobia",
-        "Among Us"
+        "Pokémon"
     ]
 
     return games_list
@@ -17,12 +18,13 @@ def get_games_list():
 def get_games_select():
     game_options = [
         create_select_option("Ninguno", value="Ninguno", emoji="❌"),
-        create_select_option("League of Legends", value="League of Legends", emoji="👊"),
+        create_select_option("Among Us", value="Among Us", emoji="🐁"),
+        create_select_option("Cookie Clicker", value="Cookie Clicker", emoji="🍪"),
         create_select_option("Dead by Deadlight", value="Dead by Deadlight", emoji="🔪"),
         create_select_option("Genshin Impact", value="Genshin Impact", emoji="🌕"),
-        create_select_option("Pokémon", value="Pokémon", emoji="🐌"),
+        create_select_option("League of Legends", value="League of Legends", emoji="👊"),
         create_select_option("Phasmophobia", value="Phasmophobia", emoji="👻"),
-        create_select_option("Among Us", value="Among Us", emoji="🐁"),
+        create_select_option("Pokémon", value="Pokémon", emoji="🐌"),
     ]
     games_select = create_select(
         options=game_options,
