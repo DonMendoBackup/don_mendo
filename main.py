@@ -98,6 +98,63 @@ async def games(ctx):
                                                     'Comunica el siguiente mensaje al administrador:', str(e))
 
 
+@slash.slash(name='games_add', description='Únete a los videojuegos que te interesen', guild_ids=[GUILD])
+async def games_add(ctx):
+    try:
+        user = ctx.guild.get_member(ctx.author.id)
+        games_separator = discord.utils.get(ctx.guild.roles, id=int(os.getenv('ROLE_CONF_GAMES')))
+        await user.add_roles(games_separator)
+
+        games_embed = discord.Embed(title='Elige aquellos videojuegos que te interesen:', colour=games_separator.color)
+        games_action_row = games_utils.get_games_select()
+        await ctx.send(embed=games_embed, components=[games_action_row], hidden=True)
+        game_roles: InteractionContext = await wait_for_component(bot, components=games_action_row, timeout=120)
+
+        if "Ninguno" not in game_roles.selected_options:
+            for game in games_utils.get_games_list():
+                guild_role = discord.utils.get(ctx.guild.roles, name=game)
+                if game in game_roles.selected_options:
+                    if guild_role not in user.roles:
+                        await user.add_roles(guild_role)
+
+        await message_utils.answer_interaction(game_roles, 'Tus videojuegos han sido actualizados con éxito.',
+                                               "Tus roles actuales de **videojuegos** son:  " + message_utils.list_to_bullet_list(
+                                                   game_roles.selected_options),
+                                               games_separator.color)
+
+    except Exception as e:
+        await message_utils.answer_interaction(ctx, 'Se ha producido un error al actualizar tus roles. '
+                                                    'Comunica el siguiente mensaje al administrador:', str(e))
+
+
+@slash.slash(name='games_remove', description='Deja los videojuegos que no te interesen', guild_ids=[GUILD])
+async def games_remove(ctx):
+    try:
+        user = ctx.guild.get_member(ctx.author.id)
+        games_separator = discord.utils.get(ctx.guild.roles, id=int(os.getenv('ROLE_CONF_GAMES')))
+        await user.add_roles(games_separator)
+
+        games_embed = discord.Embed(title='Elige aquellos videojuegos que NO te interesen:', colour=games_separator.color)
+        games_action_row = games_utils.get_games_select()
+        await ctx.send(embed=games_embed, components=[games_action_row], hidden=True)
+        game_roles: InteractionContext = await wait_for_component(bot, components=games_action_row, timeout=120)
+
+        if "Ninguno" not in game_roles.selected_options:
+            for game in games_utils.get_games_list():
+                guild_role = discord.utils.get(ctx.guild.roles, name=game)
+                if game in game_roles.selected_options:
+                    if guild_role not in user.roles:
+                        await user.remove_roles(guild_role)
+
+        await message_utils.answer_interaction(game_roles, 'Tus videojuegos han sido actualizados con éxito.',
+                                               "Tus roles actuales de **videojuegos** son:  " + message_utils.list_to_bullet_list(
+                                                   game_roles.selected_options),
+                                               games_separator.color)
+
+    except Exception as e:
+        await message_utils.answer_interaction(ctx, 'Se ha producido un error al actualizar tus roles. '
+                                                    'Comunica el siguiente mensaje al administrador:', str(e))
+
 @slash.slash(name='promote', description='Asciende a un miembro de rango inferior', guild_ids=[GUILD])
 async def promote(ctx: InteractionContext, member: discord.Member):
     try:
