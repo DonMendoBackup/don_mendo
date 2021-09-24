@@ -149,7 +149,7 @@ async def games_remove(ctx):
                 guild_role = discord.utils.get(ctx.guild.roles, name=game)
                 if game in game_roles.selected_options:
                     if guild_role not in user.roles:
-                        added.append(game)
+                        removed.append(game)
                         await user.remove_roles(guild_role)
 
         await message_utils.answer_interaction(game_roles, 'Tus videojuegos han sido actualizados con éxito.',
