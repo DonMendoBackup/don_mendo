@@ -110,16 +110,19 @@ async def games_add(ctx):
         await ctx.send(embed=games_embed, components=[games_action_row], hidden=True)
         game_roles: InteractionContext = await wait_for_component(bot, components=games_action_row, timeout=120)
 
+        added = []
+
         if "Ninguno" not in game_roles.selected_options:
             for game in games_utils.get_games_list():
                 guild_role = discord.utils.get(ctx.guild.roles, name=game)
                 if game in game_roles.selected_options:
                     if guild_role not in user.roles:
+                        added.append(game)
                         await user.add_roles(guild_role)
 
         await message_utils.answer_interaction(game_roles, 'Tus videojuegos han sido actualizados con éxito.',
-                                               "Tus roles actuales de **videojuegos** son:  " + message_utils.list_to_bullet_list(
-                                                   game_roles.selected_options),
+                                               "Se han añadido los siguientes roles de **videojuegos**:  " + message_utils.list_to_bullet_list(
+                                                   added),
                                                games_separator.color)
 
     except Exception as e:
@@ -139,16 +142,19 @@ async def games_remove(ctx):
         await ctx.send(embed=games_embed, components=[games_action_row], hidden=True)
         game_roles: InteractionContext = await wait_for_component(bot, components=games_action_row, timeout=120)
 
+        removed = []
+
         if "Ninguno" not in game_roles.selected_options:
             for game in games_utils.get_games_list():
                 guild_role = discord.utils.get(ctx.guild.roles, name=game)
                 if game in game_roles.selected_options:
                     if guild_role not in user.roles:
+                        added.append(game)
                         await user.remove_roles(guild_role)
 
         await message_utils.answer_interaction(game_roles, 'Tus videojuegos han sido actualizados con éxito.',
-                                               "Tus roles actuales de **videojuegos** son:  " + message_utils.list_to_bullet_list(
-                                                   game_roles.selected_options),
+                                               "Se han eliminado los siguientes roles de **videojuegos**:  " + message_utils.list_to_bullet_list(
+                                                   removed),
                                                games_separator.color)
 
     except Exception as e:
