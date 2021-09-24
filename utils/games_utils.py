@@ -8,6 +8,7 @@ def get_games_list():
         "Dead by Deadlight",
         "Genshin Impact",
         "League of Legends",
+        "Minecraft",
         "Phasmophobia",
         "Pokémon"
     ]
@@ -23,6 +24,7 @@ def get_games_select():
         create_select_option("Dead by Deadlight", value="Dead by Deadlight", emoji="🔪"),
         create_select_option("Genshin Impact", value="Genshin Impact", emoji="🌕"),
         create_select_option("League of Legends", value="League of Legends", emoji="👊"),
+        create_select_option("Minecraft", value="Minecraft", emoji="💎"),
         create_select_option("Phasmophobia", value="Phasmophobia", emoji="👻"),
         create_select_option("Pokémon", value="Pokémon", emoji="🐌"),
     ]
