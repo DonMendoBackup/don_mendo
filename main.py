@@ -148,7 +148,7 @@ async def games_remove(ctx):
             for game in games_utils.get_games_list():
                 guild_role = discord.utils.get(ctx.guild.roles, name=game)
                 if game in game_roles.selected_options:
-                    if guild_role not in user.roles:
+                    if guild_role in user.roles:
                         removed.append(game)
                         await user.remove_roles(guild_role)
 
