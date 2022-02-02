@@ -171,7 +171,7 @@ async def on_component_promotion(bot: discord.Client, ctx: ComponentContext):
             if points_achieved == points_needed:
                 # Update promotion in channel
                 promotion_msg.title = "Ascenso logrado con éxito"
-                await ctx.origin_message.edit(embed=promotion_msg, components=None)
+                await ctx.origin_message.edit(embed=promotion_msg, components=[])
 
                 # Update member roles
                 await member.add_roles(new_role)
